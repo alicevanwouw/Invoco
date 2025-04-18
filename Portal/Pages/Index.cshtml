@@ -1,10 +1,134 @@
 ﻿@page
-@model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    .tab-content {
+        height: calc(100vh - 170px);
+        overflow: auto;
+        padding: 20px;
+        background-color: white;
+    }
+
+    .nav-tabs {
+        --bs-nav-link-color: #343a40;
+        --bs-nav-link-hover-color: #81abcd;
+        border-bottom: 2px solid white;
+    }
+
+    .nav-link {
+        font-size: 17px;
+    }
+
+    .nav-tabs .nav-item.show .nav-link,
+    .nav-tabs .nav-link.active {
+        border-color: transparent;
+        font-weight: 500;
+    }
+
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table thead {
+        vertical-align: bottom;
+        border-bottom: 2px solid #81abcd !important;
+    }
+
+    .table th,
+    .table td {
+        border: none !important;
+    }
+
+    th {
+        font-weight: 480 !important;
+    }
+
+    .table-container {
+        max-height: 60vh;
+        overflow-y: auto;
+        background-color: white;
+        border-radius: 0.375rem;
+        box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.05);
+    }
+    .btn-filter {
+        background-color: #81abcd;
+        border: none;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn-filter:hover {
+        background-color: #81abcd;
+    }
+</style>
+
+<div class="container-fluid h-100">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#analytics">Analytics</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="overview">
+            <div class="container-fluid">
+                <div class="d-flex justify-content-end gap-2">
+                    <form method="get" class="d-flex align-items-center gap-3 mb-3">
+                        <div class="d-flex align-items-center">
+                            <label for="startDate" class="me-2">Start Date:</label>
+                            <input type="date" id="startDate" name="StartDate" class="form-control" />
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <label for="endDate" class="me-2">End Date:</label>
+                            <input type="date" id="endDate" name="EndDate" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-filter">Filter</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="table table-bordered table-hover shadow-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Call ID</th>
+                            <th>Caller Name</th>
+                            <th>Phone Number</th>
+                            <th>Call Start</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>c49a1899-4d43-41f7-8d63-4e75ef7f1ca3</td>
+                            <td>Alice</td>
+                            <td>01527306999</td>
+                            <td>2025-04-16 12:57:48</td>
+                            <td><span class="badge bg-primary">Sent</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary">Retry</button></td>
+                        </tr>
+                        <tr>
+                            <td>abc12345-ffff-aaaa-bbbb-cccc1234</td>
+                            <td>John Doe</td>
+                            <td>0111234567</td>
+                            <td>2025-04-15 09:45:00</td>
+                            <td><span class="badge bg-success">Success</span></td>
+                            <td><button class="btn btn-sm btn-outline-secondary" disabled>✓</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="analytics">
+            <div class="container-fluid">
+                <div class="card p-4 shadow-sm">
+                    <p>Analytics placeholder content here</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
