@@ -8,7 +8,10 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Repositories\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LacrmIntegration.Domain\LacrmIntegration.Domain.csproj" />
   </ItemGroup>
 
 </Project>
