@@ -1,0 +1,6 @@
+@LacrmIntegrationAPI_HostAddress = http://localhost:5165
+
+GET {{LacrmIntegrationAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
