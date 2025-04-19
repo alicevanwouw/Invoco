@@ -1,4 +1,6 @@
 ﻿@page
+@using Portal.Models
+@model IndexModel
 
 <style>
     .tab-content {
@@ -79,31 +81,46 @@
                 <table class="table table-bordered table-hover shadow-sm">
                     <thead class="table-light">
                         <tr>
-                            <th>Call ID</th>
-                            <th>Caller Name</th>
-                            <th>Phone Number</th>
-                            <th>Call Start</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            @foreach (var prop in typeof(CallEventModel).GetProperties())
+                            {
+                                <th>@prop.Name</th>
+                            }
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>c49a1899-4d43-41f7-8d63-4e75ef7f1ca3</td>
-                            <td>Alice</td>
-                            <td>01527306999</td>
-                            <td>2025-04-16 12:57:48</td>
-                            <td><span class="badge bg-primary">Sent</span></td>
-                            <td><button class="btn btn-sm btn-outline-secondary">Retry</button></td>
-                        </tr>
-                        <tr>
-                            <td>abc12345-ffff-aaaa-bbbb-cccc1234</td>
-                            <td>John Doe</td>
-                            <td>0111234567</td>
-                            <td>2025-04-15 09:45:00</td>
-                            <td><span class="badge bg-success">Success</span></td>
-                            <td><button class="btn btn-sm btn-outline-secondary" disabled>✓</button></td>
-                        </tr>
+                        @if (Model.CallLogs.Any())
+                        {
+                            foreach (var log in Model.CallLogs)
+                            {
+                                <tr>
+                                    <td>@log.CallId</td>
+                                    <td>@log.CallerName</td>
+                                    <td>@log.PhoneNumber</td>
+                                    <td>@log.CallStart.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        <span class="badge bg-@(log.Status == "Success" ? "success" : "danger")">
+                                            @log.Status
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (log.Status == "Success")
+                                        {
+                                            <button class="btn btn-sm btn-outline-secondary" disabled>✓</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-secondary">Retry</button>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No call logs found.</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>

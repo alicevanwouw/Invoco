@@ -20,7 +20,7 @@ namespace LacrmIntegration.Application.Services
 
         public List<CallEventLogEntry> GetCallLogs()
         {
-            throw new NotImplementedException();
+            return _logStore.GetAll();
         }
 
         public Task<CallResult> HandleCallEventAsync(CallEventDto dto)
