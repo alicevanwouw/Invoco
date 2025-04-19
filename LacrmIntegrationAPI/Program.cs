@@ -10,17 +10,19 @@ builder.Services.AddScoped<ICallEventService, CallEventService>();
 builder.Services.AddSingleton<ICallEventLogStore, InMemoryCallEventLogStore>();
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "LACRM Integration API");
+    });
 }
-
 
 // Seed dummy logs
 var scope = app.Services.CreateScope();
@@ -32,22 +34,42 @@ logStore.Add(new CallEventLogEntry
     CallId = Guid.NewGuid().ToString(),
     CallerName = "Alice",
     PhoneNumber = "01527306999",
-    CallStart = DateTime.Today.AddHours(10),
+    CallStart = DateTime.Now.AddMinutes(-30),
     Status = "Success",
     ResponseMessage = "Contact created"
 });
 
 logStore.Add(new CallEventLogEntry
 {
-    Timestamp = DateTime.UtcNow.AddMinutes(-10),
+    Timestamp = DateTime.UtcNow.AddDays(-1),
     CallId = Guid.NewGuid().ToString(),
     CallerName = "Bob",
     PhoneNumber = "0821234567",
-    CallStart = DateTime.Today.AddHours(11),
+    CallStart = DateTime.Now.AddDays(-1),
     Status = "Failed",
     ResponseMessage = "Duplicate contact"
 });
 
+logStore.Add(new CallEventLogEntry
+{
+    Timestamp = DateTime.UtcNow.AddHours(-3),
+    CallId = Guid.NewGuid().ToString(),
+    CallerName = "Fred",
+    PhoneNumber = "0823582566",
+    CallStart = DateTime.Now.AddHours(-3),
+    Status = "Success",
+    ResponseMessage = "Contact Created"
+});
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Alert API");
+    });
+}
 
 app.UseHttpsRedirection();
 

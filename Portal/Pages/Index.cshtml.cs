@@ -29,10 +29,10 @@ namespace Portal.Pages
         public async Task OnGetAsync()
         {
             if (!StartDate.HasValue)
-                StartDate = DateTime.Today.AddDays(-1);
+                StartDate = DateTime.Now.AddDays(-1);
 
             if (!EndDate.HasValue)
-                EndDate = DateTime.Today;
+                EndDate = DateTime.Now;
 
             try
             {
