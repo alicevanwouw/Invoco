@@ -30,5 +30,12 @@ namespace LacrmIntegrationAPI.Controllers
 
             return Ok(result.Message);
         }
+
+        [HttpGet]
+        public IActionResult GetCallLog()
+        {
+            var logEntries = _callEventService.GetCallLogs();
+            return Ok(logEntries);
+        }
     }
 }
