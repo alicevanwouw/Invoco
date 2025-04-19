@@ -15,95 +15,60 @@
 
 
     <style>
-
         html, body {
-          height: 100vh;
-          margin: 0;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .wrapper {
-          display: flex;
-          flex: 1;
-          overflow: hidden;
-        }
-
-        .sidebar {
-          width: 60px;
-          background-color: #343a40;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: fixed;
-          left: 0;
-          top: 0;
-          bottom: 0;
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
 
         .main-layout {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          width: 100vw;
-          background-color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background-color: #f1f1f1;
         }
 
         .top-nav {
-          background-color: #81abcd;
-          padding: 0px 10px;
-          border-bottom: none;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
+            background-color: #81abcd;
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
         }
 
         .content-wrapper {
-          flex-grow: 1;
-          overflow-y: auto;
-          padding: 2rem 2.5rem;
-          overflow: hidden;
-          display: flex;
-          flex-direction: column;
+            flex-grow: 1;
+            overflow: hidden;
+            padding: 2rem 2.5rem;
+            display: flex;
+            flex-direction: column;
         }
 
         .footer {
-          background-color: transparent;
-          padding: 10px;
-          text-align: center;
-          border-top: none;
-          width: 100%;
-          line-height: 30px !important;
-          color: gray;
+            background-color: transparent;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            line-height: 30px;
+            color: gray;
         }
 
         .logo-icon {
-          color: white;
+            color: white;
         }
 
-        #page-description{
-          color: white;
-          font-weight: 700;
+        #page-description {
+            color: white;
+            font-weight: 700;
         }
-
-        .tooltip-inner {
-          background-color: #81abcd !important;
-          color: white !important;
-          font-weight: bold;
-        }
-
-        .bs-tooltip-top .tooltip-arrow::before,
-        .bs-tooltip-bottom .tooltip-arrow::before,
-        .bs-tooltip-start .tooltip-arrow::before,
-        .bs-tooltip-end .tooltip-arrow::before {
-            border-top-color: #81abcd !important;
-            border-bottom-color: #81abcd !important;
-            border-left-color: #81abcd !important;
-            border-right-color: #81abcd !important;
-        }
-
-      
     </style>
 
 </head>
@@ -141,11 +106,4 @@
 </body>
 </html>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
-    });
-</script>
+
