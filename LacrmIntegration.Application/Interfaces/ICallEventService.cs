@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LacrmIntegration.Application.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace LacrmIntegration.Application.Interfaces
 {
     public interface ICallEventService
     {
+        Task<CallEventDto> HandleCallEventAsync(CallEventDto callEvent);
     }
 }

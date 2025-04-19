@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LacrmIntegration.Application.DTOs
 {
     public class CallEventDto
     {
+        public required string EventName { get; set; }
+        public DateTime CallStart { get; set; }
+        public Guid CallId { get; set; }
+        public required string CallersName { get; set; }
+        public required string CallersTelephoneNumber { get; set; }
     }
 }

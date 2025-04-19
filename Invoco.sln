@@ -8,17 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacrmIntegrationAPI", "Lacr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacrmIntegration.Application", "LacrmIntegration.Application\LacrmIntegration.Application.csproj", "{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacrmIntegration.Domain", "LacrmIntegration.Domain\LacrmIntegration.Domain.csproj", "{9B04988B-DA88-48FD-9D93-A09BEE329D4C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacrmIntegration.Infrastructure", "LacrmIntegration.Infrastructure\LacrmIntegration.Infrastructure.csproj", "{A2CD8ABB-2806-4791-828F-2D9DAECD2A60}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{60C1484F-2156-4CD0-9BCE-04CEC7B9AEAC}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{19F6F78A-167C-457D-ADB9-D26E39E1466A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{EB069D59-8380-4BAA-A0AB-E804C76C1CA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,14 +30,6 @@ Global
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9B04988B-DA88-48FD-9D93-A09BEE329D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B04988B-DA88-48FD-9D93-A09BEE329D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B04988B-DA88-48FD-9D93-A09BEE329D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B04988B-DA88-48FD-9D93-A09BEE329D4C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A2CD8ABB-2806-4791-828F-2D9DAECD2A60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A2CD8ABB-2806-4791-828F-2D9DAECD2A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A2CD8ABB-2806-4791-828F-2D9DAECD2A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A2CD8ABB-2806-4791-828F-2D9DAECD2A60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,8 +37,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8D8F4CE5-ADF5-4BFC-BA0C-CCCB01D3F397} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9} = {60C1484F-2156-4CD0-9BCE-04CEC7B9AEAC}
-		{9B04988B-DA88-48FD-9D93-A09BEE329D4C} = {19F6F78A-167C-457D-ADB9-D26E39E1466A}
-		{A2CD8ABB-2806-4791-828F-2D9DAECD2A60} = {EB069D59-8380-4BAA-A0AB-E804C76C1CA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B5F535C-0E81-44DF-9D06-D1ACF495B6E2}
