@@ -1,4 +1,5 @@
-﻿using LacrmIntegration.Application.DTOs;
+﻿using LacrmIntegration.Application.Common;
+using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace LacrmIntegration.Application.Services
 {
     public class CallEventService : ICallEventService
     {
-        public Task<CallEventDto> HandleCallEventAsync(CallEventDto callEvent)
+        public Task<CallResult> HandleCallEventAsync(CallEventDto dto)
         {
             throw new NotImplementedException();
         }
