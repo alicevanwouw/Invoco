@@ -1,3 +1,4 @@
+using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.Interfaces;
 using LacrmIntegration.Application.Services;
 
@@ -19,6 +20,34 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+
+// Seed dummy logs
+var scope = app.Services.CreateScope();
+var logStore = scope.ServiceProvider.GetRequiredService<ICallEventLogStore>();
+
+logStore.Add(new CallEventLogEntry
+{
+    Timestamp = DateTime.UtcNow.AddMinutes(-30),
+    CallId = Guid.NewGuid().ToString(),
+    CallerName = "Alice",
+    PhoneNumber = "01527306999",
+    CallStart = DateTime.Today.AddHours(10),
+    Status = "Success",
+    ResponseMessage = "Contact created"
+});
+
+logStore.Add(new CallEventLogEntry
+{
+    Timestamp = DateTime.UtcNow.AddMinutes(-10),
+    CallId = Guid.NewGuid().ToString(),
+    CallerName = "Bob",
+    PhoneNumber = "0821234567",
+    CallStart = DateTime.Today.AddHours(11),
+    Status = "Failed",
+    ResponseMessage = "Duplicate contact"
+});
+
 
 app.UseHttpsRedirection();
 
