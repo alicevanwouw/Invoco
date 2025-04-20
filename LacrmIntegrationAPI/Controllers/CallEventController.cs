@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace LacrmIntegrationAPI.Controllers
 {
@@ -26,6 +27,7 @@ namespace LacrmIntegrationAPI.Controllers
         }
 
         [HttpPost("callevent")]
+        [SwaggerRequestExample(typeof(CallEventDto), typeof(CallEventDtoExample))]
         public async Task<IActionResult> HandleCallEvent([FromBody] CallEventDto dto)
         {
             var result = await _callEventService.HandleCallEventAsync(dto);

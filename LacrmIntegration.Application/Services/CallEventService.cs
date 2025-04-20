@@ -39,14 +39,14 @@ namespace LacrmIntegration.Application.Services
                 {
                     Id = Guid.NewGuid(),
                     Timestamp = DateTime.UtcNow,
-                    Endpoint = "/contacts/add",
+                    Endpoint = CallEventConstants.ContactsAddEndpoint,
                     StatusCode = 409,
-                    ResponseMessage = "Duplicate contact",
+                    ResponseMessage = CallEventConstants.DuplicateContactMessage,
                     Notes = new List<string>
-            {
-                $"Call started at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
-                $"Caller: {dto.CallerName}, Phone: {dto.CallerTelephoneNumber}"
-            }
+                    {
+                        $"Call started at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
+                        $"Caller: {dto.CallerName}, Phone: {dto.CallerTelephoneNumber}"
+                    }
                 };
 
                 _logStore.Add(log);

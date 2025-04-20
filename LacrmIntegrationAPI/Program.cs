@@ -2,6 +2,7 @@ using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.Interfaces;
 using LacrmIntegration.Application.Services;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +17,18 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "LACRM API", Version = "v1" });
+    c.ExampleFilters(); 
+});
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<CallEventDtoExample>();
+
 builder.Services.Configure<LacrmSettings>(
-    builder.Configuration.GetSection("Lacrm"));
+builder.Configuration.GetSection("Lacrm"));
 builder.Services.AddHttpClient<ILacrmClient, LacrmClient>();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

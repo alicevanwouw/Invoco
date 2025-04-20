@@ -8,5 +8,6 @@ namespace LacrmIntegration.Application.Interfaces
     {
         Task<CallResult> CreateContactAsync(CallEventDto dto);
         Task<bool> ContactExistsAsync(string phoneNumber);
+        Task<string?> GetUserIdAsync();
     }
 }

@@ -5,6 +5,9 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
+using System.Net;
 
 public class LacrmClient : ILacrmClient
 {
@@ -19,28 +22,49 @@ public class LacrmClient : ILacrmClient
 
     public async Task<CallResult> CreateContactAsync(CallEventDto dto)
     {
+        var userId = await GetUserIdAsync(); // 👈 Get the AssignedTo ID
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return new CallResult
+            {
+                Success = false,
+                StatusCode = HttpStatusCode.Unauthorized,
+                Message = "Could not retrieve LACRM user ID"
+            };
+        }
+
         var requestPayload = new
         {
-            IsCompany = false,
-            Name = dto.CallerName,
-            Phone = new[]
+            Function = "CreateContact",
+            Parameters = new
             {
+                IsCompany = false,
+                AssignedTo = userId,
+                Name = dto.CallerName,
+                Phone = new[]
+                {
                 new { Text = dto.CallerTelephoneNumber, Type = "Mobile" }
+            }
             }
         };
 
-        var url = $"{_settings.BaseUrl}CreateContact?UserCode={_settings.UserCode}&ApiToken={_settings.ApiToken}";
+        var request = new HttpRequestMessage(HttpMethod.Post, _settings.BaseUrl)
+        {
+            Content = new StringContent(JsonConvert.SerializeObject(requestPayload), Encoding.UTF8, "application/json")
+        };
+
+        request.Headers.Add("Authorization", _settings.ApiToken);
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync(url, requestPayload);
-            var responseContent = await response.Content.ReadAsStringAsync();
+            var response = await _httpClient.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
 
             return new CallResult
             {
                 Success = response.IsSuccessStatusCode,
                 StatusCode = response.StatusCode,
-                Message = responseContent
+                Message = content
             };
         }
         catch (Exception ex)
@@ -48,34 +72,74 @@ public class LacrmClient : ILacrmClient
             return new CallResult
             {
                 Success = false,
-                StatusCode = System.Net.HttpStatusCode.InternalServerError,
+                StatusCode = HttpStatusCode.InternalServerError,
                 Message = $"Exception occurred: {ex.Message}"
             };
         }
     }
+
+
+
     public async Task<bool> ContactExistsAsync(string phoneNumber)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, "contacts/search")
+        var requestBody = new
         {
-            Content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            { "Function", "GetContacts" },
-            { "Phone", phoneNumber },
-            { "UserCode", _settings.UserCode },
-            { "ApiToken", _settings.ApiToken },
-            { "MaxNumberOfResults", "1" }
-        })
+            Function = "GetContacts",
+            Parameters = new
+            {
+                SearchTerms = phoneNumber,
+                MaxNumberOfResults = 1
+            }
         };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, _settings.BaseUrl)
+        {
+            Content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json")
+        };
+
+        request.Headers.Add("Authorization", _settings.ApiToken); 
+
+        try
+        {
+            var response = await _httpClient.SendAsync(request);
+            var rawContent = await response.Content.ReadAsStringAsync();     
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var json = JObject.Parse(rawContent);
+            var results = json["Results"] as JArray;
+
+            return results != null && results.Any();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"EXCEPTION: {ex.Message}");
+            return false;
+        }
+    }
+
+    public async Task<string?> GetUserIdAsync()
+    {
+        var body = new
+        {
+            Function = "GetUser",
+            Parameters = new { }
+        };
+
+        var request = new HttpRequestMessage(HttpMethod.Post, _settings.BaseUrl)
+        {
+            Content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json")
+        };
+
+        request.Headers.Add("Authorization", _settings.ApiToken);
 
         var response = await _httpClient.SendAsync(request);
         if (!response.IsSuccessStatusCode)
-            return false;
+            return null;
 
-        var content = await response.Content.ReadAsStringAsync();
-
-        var json = JObject.Parse(content);
-        var results = json["Results"] as JArray;
-
-        return results != null && results.Any();
+        var json = JObject.Parse(await response.Content.ReadAsStringAsync());
+        return json["UserId"]?.ToString();
     }
+
 }
