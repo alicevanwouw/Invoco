@@ -36,6 +36,7 @@ namespace Portal.Pages
 
         public async Task OnGetAsync()
         {
+            //By default, get calls for past 24hrs 
             if (!StartDate.HasValue)
                 StartDate = DateTime.Now.AddDays(-1);
 
@@ -52,10 +53,12 @@ namespace Portal.Pages
                 {
                     CallLogs = result;
 
+                    //filter call logs in date range
                     CallLogs = CallLogs
                         .Where(x => x.Timestamp >= StartDate.Value && x.Timestamp <= EndDate.Value)
                         .ToList();
-
+                    
+                    //filter based off Endpoint is specified
                     if (!string.IsNullOrWhiteSpace(Endpoint))
                     {
                         CallLogs = CallLogs
@@ -63,6 +66,7 @@ namespace Portal.Pages
                             .ToList();
                     }
 
+                    //filter based off StatusCode if specified
                     if (StatusCode.HasValue)
                     {
                         CallLogs = CallLogs
@@ -70,6 +74,7 @@ namespace Portal.Pages
                             .ToList();
                     }
 
+                    //add sorting
                     CallLogs = SortBy switch
                     {
                         "Timestamp" => SortDirection == "Desc" ? CallLogs.OrderByDescending(x => x.Timestamp).ToList() : CallLogs.OrderBy(x => x.Timestamp).ToList(),
