@@ -7,5 +7,6 @@ namespace LacrmIntegration.Application.Interfaces
     {
         Task<CallResult> HandleCallEventAsync(CallEventDto dto);
         List<CallEventLogEntry> GetCallLogs();
+        void Add(CallEventLogEntry entry);
     }
 }

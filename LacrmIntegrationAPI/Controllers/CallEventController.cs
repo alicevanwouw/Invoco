@@ -1,4 +1,5 @@
-﻿using LacrmIntegration.Application.DTOs;
+﻿using LacrmIntegration.Application.Common;
+using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,17 +19,25 @@ namespace LacrmIntegrationAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostCallEvent([FromBody] CallEventDto dto)
+        public async Task<CallResult> HandleCallEventAsync(CallEventDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            //var contactPayload = MapToLacrmContact(dto); 
+            //var note = $"Call from {dto.CallerName} at {dto.CallStart:yyyy-MM-dd HH:mm}. Number: {dto.CallerTelephoneNumber}";
 
-            var result = await _callEventService.HandleCallEventAsync(dto);
+            //var result = await _lacrmApiClient.CreateContactAsync(contactPayload);
 
-            if (!result.Success)
-                return StatusCode((int)result.StatusCode, result.Message);
+            //var logEntry = new CallEventLogEntry
+            //{
+            //    Timestamp = DateTime.UtcNow,
+            //    Endpoint = "/contacts/add",
+            //    StatusCode = (int)result.StatusCode,
+            //    ResponseMessage = result.Message,
+            //    Note = note
+            //};
 
-            return Ok(result.Message);
+            //_callEventService.Add(logEntry); // or whatever you named it
+
+            return null;
         }
 
         [HttpGet]
@@ -36,6 +45,18 @@ namespace LacrmIntegrationAPI.Controllers
         {
             var logEntries = _callEventService.GetCallLogs();
             return Ok(logEntries);
+        }
+
+        [HttpPut("{id}/note")]
+        public IActionResult UpdateNote(Guid id, [FromBody] CallEventNoteUpdateDto updateDto)
+        {
+            var log = _callEventService.GetCallLogs().FirstOrDefault(x => x.Id == id);
+            if (log == null)
+                return NotFound();
+
+            log.Note = updateDto.Note;
+
+            return NoContent(); 
         }
     }
 }

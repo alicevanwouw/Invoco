@@ -31,36 +31,29 @@ var logStore = scope.ServiceProvider.GetRequiredService<ICallEventLogStore>();
 logStore.Add(new CallEventLogEntry
 {
     Timestamp = DateTime.UtcNow.AddMinutes(-30),
-    CallId = Guid.NewGuid().ToString(),
-    CallerName = "Alice",
-    PhoneNumber = "01527306999",
-    CallStart = DateTime.Now.AddMinutes(-30),
-    Status = "Success",
-    ResponseMessage = "Contact created"
+    Endpoint = "/contacts/add",
+    StatusCode = 200,
+    ResponseMessage = "Contact created successfully",
+    Notes = new List<string> { "Call from Fred at 2025-04-20 10:30. Number: 0823582566" }
 });
 
 logStore.Add(new CallEventLogEntry
 {
     Timestamp = DateTime.UtcNow.AddDays(-1),
-    CallId = Guid.NewGuid().ToString(),
-    CallerName = "Bob",
-    PhoneNumber = "0821234567",
-    CallStart = DateTime.Now.AddDays(-1),
-    Status = "Failed",
-    ResponseMessage = "Duplicate contact"
+    Endpoint = "/contacts/add",
+    StatusCode = 409,
+    ResponseMessage = "Duplicate contact",
+    Notes = new List<string> { "Call from Jane at 2025-04-19 12:15. Number: 0112223344" }
 });
 
 logStore.Add(new CallEventLogEntry
 {
     Timestamp = DateTime.UtcNow.AddHours(-3),
-    CallId = Guid.NewGuid().ToString(),
-    CallerName = "Fred",
-    PhoneNumber = "0823582566",
-    CallStart = DateTime.Now.AddHours(-3),
-    Status = "Success",
-    ResponseMessage = "Contact Created"
+    Endpoint = "/contacts/add",
+    StatusCode = 409,
+    ResponseMessage = "Duplicate contact",
+    Notes = new List<string> { "Call from Betty at 2025-04-18 12:15. Number: 0114263446" }
 });
-
 
 if (app.Environment.IsDevelopment())
 {

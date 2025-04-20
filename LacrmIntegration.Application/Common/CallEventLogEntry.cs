@@ -8,12 +8,11 @@ namespace LacrmIntegration.Application.Common
 {
     public class CallEventLogEntry
     {
-        public DateTime Timestamp { get; set; }
-        public required string CallId { get; set; }
-        public required string CallerName { get; set; }
-        public required string PhoneNumber { get; set; }
-        public DateTime CallStart { get; set; }
-        public required string Status { get; set; }
-        public required string ResponseMessage { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public DateTime Timestamp { get; set; } 
+        public string Endpoint { get; set; } = "/contacts/add";
+        public int StatusCode { get; set; }     
+        public string? ResponseMessage { get; set; } 
+        public List<string>? Notes { get; set; }     
     }
 }

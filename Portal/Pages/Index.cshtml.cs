@@ -16,6 +16,14 @@ namespace Portal.Pages
         public DateTime? StartDate { get; set; }
         [BindProperty(SupportsGet = true)]
         public DateTime? EndDate { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string? Endpoint { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public int? StatusCode { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string? SortBy { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string? SortDirection { get; set; } = "Asc"; // Default
 
 
         public IndexModel(ILogger<IndexModel> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
@@ -45,8 +53,30 @@ namespace Portal.Pages
                     CallLogs = result;
 
                     CallLogs = CallLogs
-                        .Where(x => x.CallStart >= StartDate.Value && x.CallStart <= EndDate.Value)
+                        .Where(x => x.Timestamp >= StartDate.Value && x.Timestamp <= EndDate.Value)
                         .ToList();
+
+                    if (!string.IsNullOrWhiteSpace(Endpoint))
+                    {
+                        CallLogs = CallLogs
+                            .Where(x => x.Endpoint?.Contains(Endpoint, StringComparison.OrdinalIgnoreCase) == true)
+                            .ToList();
+                    }
+
+                    if (StatusCode.HasValue)
+                    {
+                        CallLogs = CallLogs
+                            .Where(x => x.StatusCode == StatusCode.Value)
+                            .ToList();
+                    }
+
+                    CallLogs = SortBy switch
+                    {
+                        "Timestamp" => SortDirection == "Desc" ? CallLogs.OrderByDescending(x => x.Timestamp).ToList() : CallLogs.OrderBy(x => x.Timestamp).ToList(),
+                        "Endpoint" => SortDirection == "Desc" ? CallLogs.OrderByDescending(x => x.Endpoint).ToList() : CallLogs.OrderBy(x => x.Endpoint).ToList(),
+                        "StatusCode" => SortDirection == "Desc" ? CallLogs.OrderByDescending(x => x.StatusCode).ToList() : CallLogs.OrderBy(x => x.StatusCode).ToList(),
+                        _ => CallLogs
+                    };
                 }
             }
             catch (Exception ex)

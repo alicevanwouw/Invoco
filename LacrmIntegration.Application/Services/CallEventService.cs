@@ -18,6 +18,11 @@ namespace LacrmIntegration.Application.Services
             _logStore = logStore;
         }
 
+        public void Add(CallEventLogEntry entry)
+        {
+            _logStore.Add(entry);
+        }
+
         public List<CallEventLogEntry> GetCallLogs()
         {
             return _logStore.GetAll();
