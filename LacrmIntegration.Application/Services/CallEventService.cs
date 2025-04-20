@@ -112,7 +112,7 @@ namespace LacrmIntegration.Application.Services
             }
         }
 
-        public bool UpdateNote(Guid id, string note)
+        public bool AddNote(Guid id, string note)
         {
             var log = _logStore.GetAll().FirstOrDefault(x => x.Id == id);
             if (log == null)
