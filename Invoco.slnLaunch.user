@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "Portal\\Portal.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "LacrmIntegrationAPI\\LacrmIntegrationAPI.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
