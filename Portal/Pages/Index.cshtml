@@ -123,7 +123,7 @@
                                 }
 
                                 var propName = prop.Name;
-                                if (propName == "Note")
+                                if (propName == "Notes")
                                 {
                                     <th>@propName</th>
                                 }
@@ -167,33 +167,33 @@
                                     {
                                         if (prop.Name == "Id")
                                         {
-                                            continue; // Skip Id entirely
+                                            continue; 
                                         }
 
                                         <td>
                                             @{
-                                                if (prop.Name == "Note")
+                                                if (prop.Name == "Notes")
                                                 {
-                                                    if (!string.IsNullOrWhiteSpace(log.Note))
+                                                    @if (log.Notes?.Any() == true)
                                                     {
+                                                        var serialized = Json.Serialize(log.Notes);
                                                         <button type="button"
                                                                 class="btn btn-sm btn-outline-primary"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#noteModal"
-                                                                data-note="@log.Note">
+                                                                data-note='@Html.Raw(serialized)'>
                                                             <i class="bi bi-sticky"
                                                                data-bs-toggle="tooltip"
                                                                data-bs-placement="top"
-                                                               title="Read note"></i>
-                                                        </button>
-                                                        <button class="btn btn-sm btn-outline-secondary"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#editNoteModal"
-                                                                data-id="@log.Id"
-                                                                data-note="@log.Note">
-                                                            <i class="bi bi-plus"></i>
+                                                               title="Read notes"></i>
                                                         </button>
                                                     }
+                                                    <button class="btn btn-sm btn-outline-secondary"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#editNoteModal"
+                                                            data-id="@log.Id">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
                                                 }
                                                 else
                                                 {
@@ -244,7 +244,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="noteModalBody">
-                    
+                    <ul id="noteList" class="list-group"></ul>
                 </div>
             </div>
         </div>
@@ -257,9 +257,9 @@
                     <h5 class="modal-title" id="noteModalLabel">Add Note</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="noteModalBody">
-                    <textarea id="newNote" name="newNote" rows="4" cols="60">
-                    </textarea>
+                <div class="modal-body" id="editNoteModalBody">
+                    <textarea id="newNote" class="form-control mb-3" rows="4" placeholder="Enter new note..."></textarea>
+                    <button type="button" class="btn btn-primary" id="submitNoteBtn">Add Note</button>
                 </div>
             </div>
         </div>
@@ -270,16 +270,50 @@
     const noteModal = document.getElementById('noteModal');
     noteModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
-        const note = button.getAttribute('data-note');
-        const modalBody = noteModal.querySelector('#noteModalBody');
-        modalBody.textContent = note || "No note available.";
+        const notesRaw = button.getAttribute('data-note');
+        const notes = JSON.parse(notesRaw || "[]");
+        const list = noteModal.querySelector('#noteList');
+        list.innerHTML = "";
+
+        if (notes.length === 0) {
+            list.innerHTML = "<li class='list-group-item text-muted'>No notes available.</li>";
+        } else {
+            notes.forEach(note => {
+                const item = document.createElement("li");
+                item.className = "list-group-item";
+                item.textContent = note;
+                list.appendChild(item);
+            });
+        }
     });
 
-    const editNoteModal = document.getElementById('editNoteModal');
-    noteModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const note = button.getAttribute('data-note');
-    });
+    let currentLogId = null;
+
+     const editNoteModal = document.getElementById('editNoteModal');
+     editNoteModal.addEventListener('show.bs.modal', function (event) {
+         const button = event.relatedTarget;
+         currentLogId = button.getAttribute('data-id');
+         document.getElementById('newNote').value = "";
+     });
+
+     document.getElementById('submitNoteBtn').addEventListener('click', async () => {
+         const noteText = document.getElementById('newNote').value.trim();
+         console.log(currentLogId);
+         if (!noteText || !currentLogId) return;
+         const apiBaseUrl = "@Model.baseUrl";
+         const response = await fetch(`${apiBaseUrl}/callevent/${currentLogId}/note`, {
+             method: 'PUT',
+             headers: { 'Content-Type': 'application/json' },
+             body: JSON.stringify({ note: noteText })
+         });
+
+         if (response.ok) {
+             bootstrap.Modal.getInstance(editNoteModal)?.hide();
+             location.reload(); 
+         } else {
+             alert("Failed to add note.");
+         }
+     });
 
     document.addEventListener("DOMContentLoaded", function () {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

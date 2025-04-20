@@ -32,5 +32,16 @@ namespace LacrmIntegration.Application.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<bool> UpdateNoteAsync(Guid id, string note)
+        {
+            var log = _logStore.GetAll().FirstOrDefault(x => x.Id == id);
+            if (log == null)
+                return false;
+
+            log.Notes.Add(note);
+
+            return true;
+        }
     }
 }

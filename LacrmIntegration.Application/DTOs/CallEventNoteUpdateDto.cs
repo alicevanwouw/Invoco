@@ -3,6 +3,6 @@ namespace LacrmIntegration.Application.DTOs
 {
     public class CallEventNoteUpdateDto
     {
-        public required string Note { get; set; }
+        public string Note { get; set; } = string.Empty;
     }
 }

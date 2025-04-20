@@ -10,7 +10,7 @@ namespace Portal.Pages
         private readonly ILogger<IndexModel> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
-        private readonly string _baseUrl;
+        public readonly string baseUrl;
         public List<CallEventModel> CallLogs { get; set; } = new();
         [BindProperty(SupportsGet = true)]
         public DateTime? StartDate { get; set; }
@@ -31,7 +31,7 @@ namespace Portal.Pages
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
-            _baseUrl = _configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("No API BASE URL specified");
+            baseUrl = _configuration["ApiSettings:BaseUrl"] ?? throw new InvalidOperationException("No API BASE URL specified");
         }
 
         public async Task OnGetAsync()
@@ -45,7 +45,7 @@ namespace Portal.Pages
             try
             {
                 var client = _httpClientFactory.CreateClient();                
-                var apiUrl = $"{_baseUrl}/CallEvent"; 
+                var apiUrl = $"{baseUrl}/CallEvent"; 
                 var result = await client.GetFromJsonAsync<List<CallEventModel>>(apiUrl);
 
                 if (result != null)

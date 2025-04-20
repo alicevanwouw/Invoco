@@ -48,15 +48,13 @@ namespace LacrmIntegrationAPI.Controllers
         }
 
         [HttpPut("{id}/note")]
-        public IActionResult UpdateNote(Guid id, [FromBody] CallEventNoteUpdateDto updateDto)
+        public async Task<IActionResult> UpdateNote(Guid id, [FromBody] CallEventNoteUpdateDto updateDto)
         {
-            var log = _callEventService.GetCallLogs().FirstOrDefault(x => x.Id == id);
-            if (log == null)
+            var success = await _callEventService.UpdateNoteAsync(id, updateDto.Note);
+            if (!success)
                 return NotFound();
 
-            log.Note = updateDto.Note;
-
-            return NoContent(); 
+            return NoContent();
         }
     }
 }

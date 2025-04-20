@@ -12,7 +12,7 @@ namespace LacrmIntegration.Application.Common
         public DateTime Timestamp { get; set; } 
         public string Endpoint { get; set; } = "/contacts/add";
         public int StatusCode { get; set; }     
-        public string? ResponseMessage { get; set; } 
-        public List<string>? Notes { get; set; }     
+        public string? ResponseMessage { get; set; }
+        public required List<string>? Notes { get; set; } = new List<string>();    
     }
 }
