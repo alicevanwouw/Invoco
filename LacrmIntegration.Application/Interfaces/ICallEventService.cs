@@ -8,6 +8,6 @@ namespace LacrmIntegration.Application.Interfaces
         Task<CallResult> HandleCallEventAsync(CallEventDto dto);
         List<CallEventLogEntry> GetCallLogs();
         void Add(CallEventLogEntry entry);
-        Task<bool> UpdateNoteAsync(Guid id, string note);
+        bool UpdateNote(Guid id, string note);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +15,13 @@ namespace LacrmIntegration.Application.Services
     {
         private readonly ICallEventLogStore _logStore;
         private readonly ILacrmClient _lacrmClient;
+        private readonly ILogger<LacrmClient> _logger;
 
-        public CallEventService(ICallEventLogStore logStore, ILacrmClient lacrmClient)
+        public CallEventService(ICallEventLogStore logStore, ILacrmClient lacrmClient, ILogger<LacrmClient> logger)
         {
             _logStore = logStore;
             _lacrmClient = lacrmClient;
+            _logger = logger;
         }
 
         public void Add(CallEventLogEntry entry)
@@ -33,53 +36,83 @@ namespace LacrmIntegration.Application.Services
 
         public async Task<CallResult> HandleCallEventAsync(CallEventDto dto)
         {
-            if (await _lacrmClient.ContactExistsAsync(dto.CallerTelephoneNumber))
+            var now = DateTime.UtcNow;
+            var id = Guid.NewGuid();
+
+            try
             {
-                var log = new CallEventLogEntry
+                // Check for duplicates
+                if (await _lacrmClient.ContactExistsAsync(dto.CallerTelephoneNumber))
                 {
-                    Id = Guid.NewGuid(),
-                    Timestamp = DateTime.UtcNow,
+                    _logStore.Add(new CallEventLogEntry
+                    {
+                        Id = id,
+                        Timestamp = now,
+                        Endpoint = CallEventConstants.ContactsAddEndpoint,
+                        StatusCode = 409,
+                        ResponseMessage = CallEventConstants.DuplicateContactMessage,
+                        Notes = new List<string>
+                        {
+                            $"Call started at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
+                            $"Caller: {dto.CallerName}, Phone: {dto.CallerTelephoneNumber}"
+                        }
+                    });
+
+                    return new CallResult
+                    {
+                        Success = false,
+                        StatusCode = HttpStatusCode.Conflict,
+                        Message = CallEventConstants.DuplicateContactMessage
+                    };
+                }
+
+                // Try create contact
+                var result = await _lacrmClient.CreateContactAsync(dto);
+
+                _logStore.Add(new CallEventLogEntry
+                {
+                    Id = id,
+                    Timestamp = now,
                     Endpoint = CallEventConstants.ContactsAddEndpoint,
-                    StatusCode = 409,
-                    ResponseMessage = CallEventConstants.DuplicateContactMessage,
+                    StatusCode = (int)result.StatusCode,
+                    ResponseMessage = result.Message,
                     Notes = new List<string>
                     {
-                        $"Call started at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
-                        $"Caller: {dto.CallerName}, Phone: {dto.CallerTelephoneNumber}"
+                        $"Call from {dto.CallerName} at {dto.CallStart:yyyy-MM-dd HH:mm:ss} - Phone: {dto.CallerTelephoneNumber}"
                     }
-                };
+                });
 
-                _logStore.Add(log);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while handling call event for {Caller}", dto.CallerName);
+
+                _logStore.Add(new CallEventLogEntry
+                {
+                    Id = id,
+                    Timestamp = now,
+                    Endpoint = CallEventConstants.ContactsAddEndpoint,
+                    StatusCode = 500,
+                    ResponseMessage = "Internal server error",
+                    Notes = new List<string>
+                    {
+                        $"Call from {dto.CallerName} at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
+                        $"Phone: {dto.CallerTelephoneNumber}",
+                        $"Exception: {ex.Message}"
+                    }
+                });
 
                 return new CallResult
                 {
                     Success = false,
-                    StatusCode = HttpStatusCode.Conflict,
-                    Message = "Duplicate contact"
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    Message = "An unexpected error occurred while processing the call."
                 };
             }
-
-            var result = await _lacrmClient.CreateContactAsync(dto);
-
-            var logEntry = new CallEventLogEntry
-            {
-                Id = Guid.NewGuid(),
-                Timestamp = DateTime.UtcNow,
-                Endpoint = "/contacts/add",
-                StatusCode = (int)result.StatusCode,
-                ResponseMessage = result.Message,
-                Notes = new List<string>
-            {
-                $"Call from {dto.CallerName} at {dto.CallStart} - Phone: {dto.CallerTelephoneNumber}"
-            }
-            };
-
-            _logStore.Add(logEntry);
-
-            return result;
         }
 
-        public async Task<bool> UpdateNoteAsync(Guid id, string note)
+        public bool UpdateNote(Guid id, string note)
         {
             var log = _logStore.GetAll().FirstOrDefault(x => x.Id == id);
             if (log == null)
