@@ -44,7 +44,7 @@ namespace LacrmIntegrationAPI.Controllers
         [HttpPut("{id}/note")]
         public async Task<IActionResult> UpdateNote(Guid id, [FromBody] CallEventNoteUpdateDto updateDto)
         {
-            var success = _callEventService.UpdateNote(id, updateDto.Note);
+            var success = _callEventService.AddNote(id, updateDto.Note);
             if (!success)
                 return NotFound();
 

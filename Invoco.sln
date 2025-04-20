@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{02EA681E-C7D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{60C1484F-2156-4CD0-9BCE-04CEC7B9AEAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LacrmIntegration.Application.Tests", "LacrmIntegration.Application.Tests\LacrmIntegration.Application.Tests.csproj", "{A04D87A5-87DE-472E-B7DB-518F0ED6125F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85989C4B-D08B-4E3D-B1E7-7BE062438BA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A04D87A5-87DE-472E-B7DB-518F0ED6125F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A04D87A5-87DE-472E-B7DB-518F0ED6125F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A04D87A5-87DE-472E-B7DB-518F0ED6125F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A04D87A5-87DE-472E-B7DB-518F0ED6125F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
