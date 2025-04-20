@@ -4,6 +4,7 @@ using LacrmIntegration.Application.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +33,32 @@ namespace LacrmIntegration.Application.Services
 
         public async Task<CallResult> HandleCallEventAsync(CallEventDto dto)
         {
+            if (await _lacrmClient.ContactExistsAsync(dto.CallerTelephoneNumber))
+            {
+                var log = new CallEventLogEntry
+                {
+                    Id = Guid.NewGuid(),
+                    Timestamp = DateTime.UtcNow,
+                    Endpoint = "/contacts/add",
+                    StatusCode = 409,
+                    ResponseMessage = "Duplicate contact",
+                    Notes = new List<string>
+            {
+                $"Call started at {dto.CallStart:yyyy-MM-dd HH:mm:ss}",
+                $"Caller: {dto.CallerName}, Phone: {dto.CallerTelephoneNumber}"
+            }
+                };
+
+                _logStore.Add(log);
+
+                return new CallResult
+                {
+                    Success = false,
+                    StatusCode = HttpStatusCode.Conflict,
+                    Message = "Duplicate contact"
+                };
+            }
+
             var result = await _lacrmClient.CreateContactAsync(dto);
 
             var logEntry = new CallEventLogEntry

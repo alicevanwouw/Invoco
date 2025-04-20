@@ -2,6 +2,9 @@
 using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 public class LacrmClient : ILacrmClient
 {
@@ -49,5 +52,30 @@ public class LacrmClient : ILacrmClient
                 Message = $"Exception occurred: {ex.Message}"
             };
         }
+    }
+    public async Task<bool> ContactExistsAsync(string phoneNumber)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, "contacts/search")
+        {
+            Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            { "Function", "GetContacts" },
+            { "Phone", phoneNumber },
+            { "UserCode", _settings.UserCode },
+            { "ApiToken", _settings.ApiToken },
+            { "MaxNumberOfResults", "1" }
+        })
+        };
+
+        var response = await _httpClient.SendAsync(request);
+        if (!response.IsSuccessStatusCode)
+            return false;
+
+        var content = await response.Content.ReadAsStringAsync();
+
+        var json = JObject.Parse(content);
+        var results = json["Results"] as JArray;
+
+        return results != null && results.Any();
     }
 }
