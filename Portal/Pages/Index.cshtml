@@ -2,78 +2,10 @@
 @using Portal.Models
 @model IndexModel
 
-<style>
-    .tab-content {
-        height: 80vh;
-        overflow: auto;
-        padding: 2rem;
-        background-color: white;
-    }
-
-    .nav-tabs {
-        --bs-nav-link-color: #343a40;
-        --bs-nav-link-hover-color: #81abcd;
-        border-bottom: 0.2rem solid white;
-    }
-
-    .table thead {
-        border-bottom: 0.1rem solid #81abcd;
-        vertical-align: bottom;
-    }
-
-    .table th {
-        font-weight: 480;
-        border: none;
-    }
-
-    .table td {
-        border: none;
-    }
-
-    .table-container {
-        max-height: 60vh;
-        overflow-y: auto;
-        background-color: white;
-        border-radius: 0.375rem;
-        box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.05);
-    }
-
-    .btn-filter {
-        background-color: #81abcd;
-        border: none;
-        transition: background-color 0.2s ease-in-out;
-    }
-
-    .btn-filter:hover {
-        background-color: #81abcd;
-    }
-
-    .sortable-header {
-        color: #004080; /* dark blue */
-        font-weight: bold;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-        .sortable-header:hover {
-            text-decoration: underline;
-            color: #002f5f;
-        }
-
-        .sortable-header i {
-            font-size: 0.85em;
-        }
-</style>
-
 <div class="container-fluid h-100">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" data-bs-toggle="tab" href="#overview">Overview</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#analytics">Analytics</a>
         </li>
     </ul>
 
@@ -98,8 +30,14 @@
 
                         <div class="d-flex align-items-center">
                             <label for="statusCode" class="me-2 text-nowrap">Status Code:</label>
-                            <input type="number" id="statusCode" name="StatusCode" class="form-control"
-                            value="@(Model.StatusCode?.ToString())" placeholder="200" />
+                            <input type="text"
+                                   id="statusCode"
+                                   name="StatusCode"
+                                   class="form-control"
+                                   value="@(Model.StatusCode?.ToString())"
+                                   placeholder="200"
+                                   pattern="\d*"
+                                   inputmode="numeric" />
                         </div>
                         <button type="submit" class="btn btn-primary btn-filter">Filter</button>
                         <a href="/" class="btn btn-secondary">Clear</a>
@@ -202,6 +140,14 @@
                                                     {
                                                         @dt.ToString("yyyy-MM-dd HH:mm:ss")
                                                     }
+                                                    else if (prop.Name == "StatusCode" && value is int code)
+                                                    {
+                                                        var badgeClass = code >= 500 ? "status-error"
+                                                        : code >= 400 ? "status-warning"
+                                                        : "status-success";
+
+                                                        <span class="status-badge @badgeClass">@code</span>
+                                                    }
                                                     else
                                                     {
                                                         @value
@@ -224,14 +170,6 @@
                     </tbody>
 
                 </table>
-            </div>
-        </div>
-
-        <div class="tab-pane fade" id="analytics">
-            <div class="container-fluid">
-                <div class="card p-4 shadow-sm">
-                    <p>Analytics placeholder content here</p>
-                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.Interfaces;
+using LacrmIntegration.Application.Lacrm;
 using LacrmIntegration.Application.Services;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Filters;

@@ -1,11 +1,11 @@
-﻿using LacrmIntegration.Application.Common;
-using LacrmIntegration.Application.DTOs;
+﻿using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net;
 using Swashbuckle.AspNetCore.Filters;
+using LacrmIntegration.Application.Lacrm;
 
 namespace LacrmIntegrationAPI.Controllers
 {

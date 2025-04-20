@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net;
 using Microsoft.Extensions.Logging;
+using LacrmIntegration.Application.Lacrm;
 
 public class LacrmClient : ILacrmClient
 {
