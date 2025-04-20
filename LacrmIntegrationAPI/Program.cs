@@ -1,18 +1,24 @@
 using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.Interfaces;
 using LacrmIntegration.Application.Services;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.Configure<LacrmSettings>(builder.Configuration.GetSection("Lacrm"));
 builder.Services.AddScoped<ICallEventService, CallEventService>();
 builder.Services.AddSingleton<ICallEventLogStore, InMemoryCallEventLogStore>();
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<LacrmSettings>>().Value);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<LacrmSettings>(
+    builder.Configuration.GetSection("Lacrm"));
+builder.Services.AddHttpClient<ILacrmClient, LacrmClient>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

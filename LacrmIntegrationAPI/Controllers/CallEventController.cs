@@ -1,7 +1,10 @@
 ﻿using LacrmIntegration.Application.Common;
 using LacrmIntegration.Application.DTOs;
 using LacrmIntegration.Application.Interfaces;
+using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Net;
 
 namespace LacrmIntegrationAPI.Controllers
 {
@@ -12,32 +15,21 @@ namespace LacrmIntegrationAPI.Controllers
     public class CallEventController : ControllerBase
     {
         private readonly ICallEventService _callEventService;
+        private readonly LacrmSettings _settings;
+        private readonly HttpClient _httpClient;
 
-        public CallEventController(ICallEventService callEventService)
+        public CallEventController(ICallEventService callEventService, LacrmSettings settings, HttpClient httpClient)
         {
             _callEventService = callEventService;
+            _settings = settings;
+            _httpClient = httpClient;
         }
 
-        [HttpPost]
-        public async Task<CallResult> HandleCallEventAsync(CallEventDto dto)
+        [HttpPost("callevent")]
+        public async Task<IActionResult> HandleCallEvent([FromBody] CallEventDto dto)
         {
-            //var contactPayload = MapToLacrmContact(dto); 
-            //var note = $"Call from {dto.CallerName} at {dto.CallStart:yyyy-MM-dd HH:mm}. Number: {dto.CallerTelephoneNumber}";
-
-            //var result = await _lacrmApiClient.CreateContactAsync(contactPayload);
-
-            //var logEntry = new CallEventLogEntry
-            //{
-            //    Timestamp = DateTime.UtcNow,
-            //    Endpoint = "/contacts/add",
-            //    StatusCode = (int)result.StatusCode,
-            //    ResponseMessage = result.Message,
-            //    Note = note
-            //};
-
-            //_callEventService.Add(logEntry); // or whatever you named it
-
-            return null;
+            var result = await _callEventService.HandleCallEventAsync(dto);
+            return result.Success ? Ok(result) : StatusCode((int)result.StatusCode, result);
         }
 
         [HttpGet]
